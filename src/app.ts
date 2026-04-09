@@ -30,6 +30,10 @@ app.use("/api/review", reviewRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/like", likeRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Welcome to the Airbnb Clone API");
+});
+
 app.use(errorHandler);
 
 dbConnection();
