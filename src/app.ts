@@ -11,7 +11,7 @@ import bookingRoutes from "./routes/booking.route.js";
 import paymentRoutes from "./routes/payment.routes.js";
 import likeRoutes from "./routes/like.route.js";
 import cors from "cors";
-export const app: Application = express();
+const app: Application = express();
 
 app.use(
   cors({
@@ -32,7 +32,6 @@ app.use("/api/like", likeRoutes);
 
 app.use(errorHandler);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
-  dbConnection();
-});
+dbConnection();
+
+export default app;

@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
 
 let isConfigured = false;
 
@@ -10,31 +9,27 @@ const configureCloudinary = () => {
       api_key: process.env.CLOUDINARY_API_KEY!,
       api_secret: process.env.CLOUDINARY_API_SECRET!,
     });
-
     isConfigured = true;
   }
 };
 
-const uploadOnCloudinary = async (localFilePath: string) => {
+const uploadOnCloudinary = async (fileBuffer: Buffer, mimetype: string) => {
   try {
     configureCloudinary();
-
-    if (!localFilePath) return null;
-    const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto",
-      folder: "listings",
+    if (!fileBuffer) return null;
+    const response = await new Promise<any>((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { resource_type: "auto", folder: "listings" },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      stream.end(fileBuffer);
     });
-
-    // console.log(`File Uploaded on Cloudinary : ${response.url}`);
-    fs.unlinkSync(localFilePath);
     return response;
   } catch (error: any) {
     console.error("Cloudinary upload error:", error.message);
-    try {
-      fs.unlinkSync(localFilePath);
-    } catch (e: any) {
-      console.error("Error deleting file:", e.message);
-    }
     return null;
   }
 };

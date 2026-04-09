@@ -30,7 +30,7 @@ export const createListing = async (req: Request, res: Response) => {
     });
   }
 
-  const uploadPromises = images.map((file) => uploadOnCloudinary(file.path));
+  const uploadPromises = images.map((file) => uploadOnCloudinary(file.buffer, file.mimetype));
   const uploadResults = await Promise.all(uploadPromises);
   const imageUrls = uploadResults
     .filter((result) => result !== null)
@@ -249,7 +249,7 @@ export const updateListing = async (req: Request, res: Response) => {
     let imageUrls: string[] = listing.images || [];
 
     if (files && files.length > 0) {
-      const uploadPromises = files.map((file) => uploadOnCloudinary(file.path));
+      const uploadPromises = files.map((file) => uploadOnCloudinary(file.buffer, file.mimetype));
       const uploadResults = await Promise.all(uploadPromises);
 
       const newImageUrls = uploadResults
