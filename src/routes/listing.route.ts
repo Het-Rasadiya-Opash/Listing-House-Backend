@@ -11,8 +11,10 @@ import {
 } from "../controllers/listing.controller.js";
 import { verifyToken } from "../middlewares/verfiyToken.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { getListingAvailability } from "../controllers/booking.controller.js";
 
 const router = express.Router();
+router.get("/availability/:listingId", getListingAvailability);
 
 router.post("/", verifyToken, upload.array("images", 5), createListing);
 router.get("/", getAllListings);
